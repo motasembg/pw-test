@@ -1,0 +1,21 @@
+{
+  "name": "yavshok-playwright",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+  "test": "npx playwright test",
+  "test:headed": "npx playwright test --headed",
+  "test:debug": "npx playwright test --debug"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Автотесты для сайта yavshok.ru",
+  "devDependencies": {
+    "@playwright/test": "^1.53.2",
+    "@types/node": "^24.0.10"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.9.0"
+  }
+}
