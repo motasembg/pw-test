@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { test } from '../Pages/fixtures';
 import { faker } from '@faker-js/faker';
 
-test.use({ storageState: 'tests/setup/auth.json' });
+test.use({ storageState: './setup/auth.json' });
 
 test('edit profile test', async ({ editPage, profilePage, page }) => {
     await editPage.open();

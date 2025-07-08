@@ -1,10 +1,8 @@
 import { expect } from '@playwright/test';
 import { test } from '../Pages/fixtures';
-import { mock } from 'node:test';
 import { faker } from '@faker-js/faker';
 
-test.use({ storageState: 'tests/setup/auth.json' })
-
+test.use({ storageState: './setup/auth.json' });
 const mockYoung = {
   "flags": {
         "age": {
@@ -26,56 +24,6 @@ const mockYoung = {
         }
     }
 }
-
-test('login status young', async ({ page }) => {
-  await page.goto('/');
-
-  await page.route('https://api.yavshok.ru/experiments', (route) => {
-    route.fulfill({
-      status: 200,
-      body: JSON.stringify(mockYoung)
-    });
-  });
-  await page.reload();
-  await expect(page.getByTestId('main-email-input')).not.toBeVisible();
-  await expect(page.getByText('Ты молоденький котик')).toBeVisible();
-});
-
-// const mockAdult = {
-//   "flags": {
-//         "age": {
-//             "enabled": true,
-//             "young": {
-//               "from": 0,
-//               "to": 21
-//           },
-//             "adult": {
-//                 "from": 22,
-//                 "to": 68
-//             },
-//             "old": {
-//                 "from": 69,
-//                 "to": 99
-//             },
-//             "oldFrom": 69,
-//             "adultFrom": 22,
-//             "youngFrom": 2
-//         }
-//     }
-// }
-
-// test('login status adult', async ({ page }) => {
-//   await page.goto('/');
-//   await page.route('https://api.yavshok.ru/experiments', (route) => {
-//     route.fulfill({
-//       status: 200,
-//       body: JSON.stringify(mockAdult)
-//     });
-//   });
-
-//   await expect(page.getByText('Ты взрослый котик')).toBeVisible();
-// });
-
 const mockOld = {
   "flags": {
         "age": {
@@ -97,6 +45,74 @@ const mockOld = {
         }
     }
 }
+const mockAdult = {
+  "flags": {
+        "age": {
+            "enabled": true,
+            "young": {
+              "from": 0,
+              "to": 21
+          },
+            "adult": {
+                "from": 22,
+                "to": 68
+            },
+            "old": {
+                "from": 69,
+                "to": 99
+            },
+            "oldFrom": 69,
+            "adultFrom": 22,
+            "youngFrom": 2
+        }
+    }
+}
+
+test.describe('User Status Tests', () => {
+  const mockConfigs = {
+      young: mockYoung,
+      old: mockOld,
+      adult: mockAdult
+  }
+  });
+  test('displays young user status', async ({ page }) => {
+    await page.goto('/');
+    await page.route('https://api.yavshok.ru/experiments', (route) => {
+      route.fulfill({
+        status: 200,
+        body: JSON.stringify(mockOld)
+      });
+    });
+});
+
+test('displays old user status', async ({ page }) => {
+    await page.goto('/');
+    await page.route('https://api.yavshok.ru/experiments', (route) => {
+      route.fulfill({
+        status: 200,
+        body: JSON.stringify(mockOld)
+      });
+});
+});
+
+await page.reload();
+    await expect(page.getByText(expectedText)).toBeVisible();
+
+
+
+// test('login status adult', async ({ page }) => {
+//   await page.goto('/');
+//   await page.route('https://api.yavshok.ru/experiments', (route) => {
+//     route.fulfill({
+//       status: 200,
+//       body: JSON.stringify(mockAdult)
+//     });
+//   });
+
+//   await expect(page.getByText('Ты взрослый котик')).toBeVisible();
+// });
+
+
 test('login status old', async ({ page }) => {
   await page.goto('/');
   await page.route('https://api.yavshok.ru/experiments', (route) => {

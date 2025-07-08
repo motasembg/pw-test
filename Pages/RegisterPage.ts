@@ -5,9 +5,6 @@ export class ShockRegisterPage {
   public emailInput: Locator;
   public passwordInput: Locator;
   public ageInput: Locator;
-  public emailPlaceholder: Locator;
-  public passwordPlaceholder: Locator;
-  public agePlaceholder: Locator;
   public toRegisterButton: Locator;
   public toBackButton: Locator;
   public withoutEmailText: Locator;
@@ -21,16 +18,11 @@ export class ShockRegisterPage {
 
   constructor(public readonly page: Page) {
     this.title = this.page.getByText('Регистрация в ШОКе', { exact: true });
-    this.emailInput = this.page.getByTestId('register-email-input');
-    this.emailInput = this.page.getByPlaceholder('Email');
-    this.passwordInput = this.page.getByTestId('register-password-input');
-    this.passwordInput = this.page.getByPlaceholder('Пароль');
-    this.ageInput = this.page.getByTestId('register-age-input');
-    this.ageInput = this.page.getByPlaceholder('Возраст');
-    this.toRegisterButton = this.page.getByTestId('register-submit-button');
-    this.toRegisterButton = this.page.getByText('Зарегистрироваться', { exact: true });
-    this.toBackButton = this.page.getByTestId('register-back-button');
-    this.toBackButton = this.page.getByText('Назад', { exact: true });
+    this.emailInput = this.page.getByTestId('register-email-input').getByPlaceholder('Email');
+    this.passwordInput = this.page.getByTestId('register-password-input').getByPlaceholder('Пароль');
+    this.ageInput = this.page.getByTestId('register-age-input').getByPlaceholder('Возраст');
+    this.toRegisterButton = this.page.getByTestId('register-submit-button').getByText('Зарегистрироваться', { exact: true });
+    this.toBackButton = this.page.getByTestId('register-back-button').getByText('Назад', { exact: true });
     this.withoutEmailText = this.page.getByText('Введите email', { exact: true });
     this.withoutPasswordText = this.page.getByText('Введите пароль', { exact: true });
     this.withoutAgeText = this.page.getByText('Введите возраст', { exact: true });
@@ -46,13 +38,14 @@ export class ShockRegisterPage {
   public async toBackButtonClick() {
     await this.toBackButton.click();
   }
+  
 
-  public async register(email: string, password: string, age: string, valid: boolean) {
+  public async register(email: string, password: string, age: string, shouldSucceed: boolean) {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.ageInput.fill(age);
     await this.toRegisterButton.click();
-    if (valid) {
+    if (shouldSucceed) {
       await expect(this.page).toHaveURL('/');
     } else {
       await expect(this.page).toHaveURL('/register');
@@ -65,6 +58,12 @@ export class ShockRegisterPage {
       if (!age) {
         await expect(this.withoutAgeText).toBeVisible();
       }
+    }
+  }
+  
+  public async expectValidationErrors(errors: string[]) {
+    for (const error of errors) {
+        await expect(this.page.getByText(error, { exact: true })).toBeVisible();
     }
   }
 } 
